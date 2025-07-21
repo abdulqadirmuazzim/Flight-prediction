@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
         <link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B600%3B700%3B800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <title>SkyPredict - Flight Prediction</title>
         <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
         <!-- HTMX CDN -->
@@ -16,9 +17,19 @@
         --primary-color: #4919e5;
         --background-color: #f8fafc;--text-primary: #0e161b;
         --text-secondary: #7f4e97;
-        --input-background: #e7eef3;--border-color: #e2e8f0;}
+        --input-background: #e7eef3;--border-color: #e2e8f0;
+        --div-background: #ffffff;--icon-color: #333;}
+      .dark-mode {
+        --primary-color: #7171f0;
+        --background-color: #12141a;--text-primary: #e4eff6;
+        --text-secondary: #9c81a9;
+        --input-background: #131415;--border-color: #7d7d7e;
+        --div-background: #000000;--icon-color: #f5c518;}
       body {
         font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;
+      }
+      form{
+        background: var(--div-background);
       }
       .form-input {
         background-color: var(--input-background);
@@ -45,114 +56,169 @@
         opacity: 0.5;
         cursor: pointer;
       }
+      #mode-icon {
+        transition: color 0.3s ease;
+        color: var(--icon-color);
+      }
         </style>
     </head>
     <body class="bg-[var(--background-color)] text-[var(--text-primary)]">
         <div class="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden">
             <div class="layout-container flex h-full grow flex-col">
-                <header class="sticky top-0 z-10 flex items-center justify-center whitespace-nowrap border-b border-solid border-[var(--border-color)] bg-[var(--background-color)]/80 px-6 py-4 backdrop-blur-md md:px-10">
-                <div class="flex items-center gap-3 text-[var(--text-primary)]">
-                <div class="size-7 text-[var(--primary-color)]">
-                <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                <path clip-rule="evenodd" d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z" fill="currentColor" fill-rule="evenodd"></path>
-                </svg>
-                </div>
-                <h1 class="text-[var(--text-primary)] text-xl font-bold leading-tight tracking-tight">SkyPredict</h1>
-                </div>
+                <header class="sticky top-0 z-10 flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--border-color)] bg-[var(--background-color)]/80 px-6 py-4 backdrop-blur-md md:px-10">
+                  <div class="flex items-center gap-3 text-[var(--text-primary)]">
+                    <div class="size-7 text-[var(--primary-color)]">
+                      <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                      <path clip-rule="evenodd" d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z" fill="currentColor" fill-rule="evenodd"></path>
+                      </svg>
+                    </div>
+                    <h1 class="text-[var(--text-primary)] text-xl font-bold leading-tight tracking-tight">SkyPredict</h1>
+                  </div>
+                  <input type="checkbox" id="toggle" class="hidden">
+                  <label for="toggle" id="mode-label">
+                    <i id="mode-icon" class="fas fa-moon"></i> <!-- Moon for light mode -->
+                  </label>
                 </header>
             <main class="flex flex-1 justify-center py-8 px-4 sm:px-6 lg:px-8">
-            <div class="w-full max-w-2xl space-y-8">
-            <div class="text-center">
-            <h2 class="text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl">
-                            Welcome to <span class="text-[var(--primary-color)]">SkyPredict</span>
-            </h2>
-            <p class="mt-3 text-lg leading-6 text-[var(--text-secondary)]">
-                            Enter your flight details below to get a prediction.
-                        </p>
-              <button hx-get="/next" hx-trigger="mouseenter once" hx-target="#airline" class="flex w-full justify-center rounded-lg border border-transparent bg-[var(--primary-color)] py-3 px-4 text-sm font-semibold text-white">
-                Htmx Testing button
-              </button>
-            </div>
-            <form class="mt-8 space-y-6 bg-white p-6 sm:p-8 rounded-xl shadow-xl border border-[var(--border-color)]">
-            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-            <div>
-            <label id="airline" class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="airline">Source</label>
-            <select class="form-input select-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="source" name="source">
-            <option value="">Select Source</option>
-            {% for source in sources %}
-            <option value="{{source}}">{{source}}</option>              
-            {% endfor %}
-            </select>
-            </div>
-            <div>
-            <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="additional_info">Destination</label>
-            <select class="form-input select-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="destination" name="destination">
-            <option value="">Select destination</option>
+              <div class="w-full max-w-2xl space-y-8">
+                <div class="text-center">
+                  <h2 class="text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl">
+                                  Welcome to <span class="text-[var(--primary-color)]">SkyPredict</span>
+                  </h2>
+                  <p class="mt-3 text-lg leading-6 text-[var(--text-secondary)]">
+                                  Enter your flight details below to get a prediction.
+                              </p>
+                </div>
+                <form hx-post="/submit-form" hx-target="#prediction" class="mt-8 space-y-6 p-6 sm:p-8 rounded-xl shadow-xl border border-[var(--border-color)]">
+                  <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                    <div>
+                      <label id="airline" class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="airline">Source</label>
+                      <select class="form-input select-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="source" name="source">
+                      <option value="">Select Source</option>
+                      {% for source in sources %}
+                      <option value="{{source}}">{{source}}</option>              
+                      {% endfor %}
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="additional_info">Destination</label>
+                      <select class="form-input select-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="destination" name="destination">
+                      <option value="">Select destination</option>
 
-            {% for dest in destinations %}
-            <option value="{{dest}}">{{dest}}</option>
-            {% endfor %}
+                      {% for dest in destinations %}
+                      <option value="{{dest}}">{{dest}}</option>
+                      {% endfor %}
 
-            </select>
-            </div>
-            <div>
-            <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="source">Airline</label>
-            <select class="form-input select-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="airline" name="airline">
-            <option value="">Select Airline</option>
-            {% for air in airline %}
-            <option value="{{air}}">{{air}}</option>
-            {% endfor %}
-            </select>
-            </div>
-            <div>
-            <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="destination">Additional Info</label>
-            <select class="form-input select-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="additional_info" name="additional_info">
-            <option value="">Select Additional Infomation</option>
-            {% for info in add_info %}
-            <option value="{{info}}"> {{info}} </option>
-            {% endfor %}
-            </select>
-            </div>
-            <div>
-            <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="route">Route</label>
-            <select hx-target="#total_stops" hx-trigger="change" hx-get="/check_route" hx-include="[name='route']" hx-swap="innerHtml" class="form-input select-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="route" name="route">
-            <option value="">Select Route</option>
-            {% for route in routes %}
-            <option value="{{route}}">{{route}}</option>
-              
-            {% endfor %}
-            </select>
-            </div>
-            <div>
-            <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5 disabled" id="tot" for="total_stops">Total Stops</label>
-            <input class="form-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="total_stops" min="0" name="total_stops" placeholder="e.g., 0, 1, 2" type="number"/>
-            </div>
-            <div>
-            <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="duration">Duration (hours)</label>
-            <input class="form-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="duration" min="0" name="duration" placeholder="e.g., 2.5" step="0.1" type="number"/>
-            </div>
-            <div></div>
-            <div>
-            <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="date">Date</label>
-            <input class="form-input date-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="date" name="date" type="date"/>
-            </div>
-            <div>
-            <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="departure_time">Departure Time</label>
-            <input class="form-input time-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="departure_time" name="departure_time" type="time"/>
-            </div>
-            </div>
-            <div class="pt-2">
-            <button class="group relative flex w-full justify-center rounded-lg border border-transparent bg-[var(--primary-color)] py-3 px-4 text-sm font-semibold text-white shadow-md hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:ring-offset-2 transition-all" type="submit">
-                            Predict Flight
-                            </button>
-            </div>
-            </form>
-            <p class="text-center text-xs text-[var(--text-secondary)]">
-                        © 2024 SkyPredict. All rights reserved.
-                        </p>
-            </div>
+                      </select>
+                    </div>
+                  <div>
+                  <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="airline">Airline</label>
+                  <select class="form-input select-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="airline" name="airline">
+                  <option value="">Select Airline</option>
+                  {% for air in airline %}
+                  <option value="{{air}}">{{air}}</option>
+                  {% endfor %}
+                  </select>
+                  </div>
+                  <div>
+                  <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="destination">Additional Info</label>
+                  <select class="form-input select-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="additional_info" name="additional_info">
+                  <option value="">Select Additional Infomation</option>
+                  {% for info in add_info %}
+                  <option value="{{info}}"> {{info}} </option>
+                  {% endfor %}
+                  </select>
+                  </div>
+                  <div>
+                  <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="route">Route</label>
+                  <select 
+                  hx-target="#hidden"
+                  hx-trigger="change"
+                    hx-get="/check_route"
+                    hx-include="[name='route']"
+                      class="form-input select-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="route" name="route">
+                  <option value="">Select Route</option>
+                  {% for route in routes %}
+                  <option value="{{route}}">{{route}}</option>
+                  {% endfor %}
+                  </select>
+                  <span class="hidden" id="hidden"></span>
+                  </div>
+                  <div>
+                  <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5 disabled" id="tot" for="total_stops">Total Stops</label>
+                  <input class=" form-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="total_stops" min="0" name="total_stops" placeholder="e.g., 0, 1, 2" type="number"/>
+                  </div>
+                  <div>
+                  <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="duration">Duration (hours)</label>
+                  <input class="form-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="duration" min="0" name="duration" placeholder="e.g., 2.5" step="0.1" type="number"/>
+                  </div>
+                  <div></div>
+                  <div>
+                  <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="date">Date</label>
+                  <input class="form-input date-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="date" name="date" type="date"/>
+                  </div>
+                  <div>
+                  <label class="block text-sm font-medium text-[var(--text-primary)] pb-1.5" for="time">Departure Time</label>
+                  <input class="form-input time-input block w-full rounded-lg text-sm text-[var(--text-primary)] h-12 placeholder:text-[var(--text-secondary)] px-3.5 py-2.5" id="departure_time" name="departure_time" type="time"/>
+                  </div>
+                  </div>
+                  <div class="pt-2">
+                    <button class="group relative flex w-full justify-center rounded-lg border border-transparent bg-[var(--primary-color)] py-3 px-4 text-sm font-semibold text-white shadow-md hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:ring-offset-2 transition-all" type="submit">
+                                  Predict Flight
+                                  </button>
+                  </div>
+                  <h1 class="text-[var(--text-primary)] text-xl font-bold leading-tight tracking-tight" id="prediction"></h1>
+                </form>
+
+  
+              <p class="text-center text-xs text-[var(--text-secondary)]">
+                          © 2024 SkyPredict. All rights reserved.
+                          </p>
+              </div>
             </main>
             </div>
         </div>
     </body>
+
+    <script>
+      document.body.addEventListener('htmx:afterSettle',(evt)=> {
+        if (evt.target.id === 'hidden') {
+          const response = document.getElementById('hidden').innerText;
+          const stops = document.getElementById('total_stops')
+          const route = document.getElementById("route")
+          stops.disabled = true;
+          route.value == '' ? stops.disabled=false : stops.value = response;
+    }
+  })
+
+  document.addEventListener("change", (evt)=>{
+    if (evt.target.id === "source" | evt.target.id === "destination"){
+      const source = document.getElementById("source")
+      const dest = document.getElementById("destination")
+      const route = document.getElementById("route")
+      if (source.value && dest.value){
+        fetch(`/get_route?source=${source.value}&dest=${dest.value}`)
+        .then(res =>res.json()).then(data=>{
+            route.innerHTML = '';
+          // Add new ones
+          data.forEach(op => {
+            const option = document.createElement('option');
+            option.value = op;
+            option.textContent = op;
+            route.appendChild(option);
+          });
+        })
+        .catch(err=>console.log(err))
+      }
+    }
+  });
+  // Dark mode
+  const toggle = document.getElementById("toggle")
+  const icon = document.getElementById("mode-icon")
+  toggle.addEventListener("change", ()=>{
+    document.body.classList.toggle("dark-mode")
+    if (toggle.checked) icon.classList.replace("fa-moon", "fa-sun")
+    else icon.classList.replace("fa-sun", "fa-moon")
+  })
+</script>
 </html>

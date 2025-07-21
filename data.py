@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from datetime import datetime
 
 data = pd.read_excel("Data_Train.xlsx").dropna()
 
@@ -55,3 +56,18 @@ def filter_routes(source, destination, routes=route_list):
             route_list.append(r)
 
     return route_list if route_list else ["Other"]
+
+
+def get_time_period(x):
+    x = datetime.strptime(x, "%H:%M")
+    x = int(x.hour)
+    if 0 <= x < 6:
+        return "Mid-Night"
+    elif x < 12:
+        return "Morning"
+    elif x < 17:
+        return "Afternoon"
+    elif 17 <= x < 20:
+        return "Evening"
+    else:
+        return "Night"
